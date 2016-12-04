@@ -1,7 +1,7 @@
 <?php
 
 // Put puzzle input into string
-$input = file_get_contents('input1.txt');
+$input = file_get_contents('input.txt');
 
 $directionsArray = explode(',', $input);
 
