@@ -1,10 +1,12 @@
 <?php
 
+namespace Day03;
+
 /**
- * Class Puzzle
+ * Class PuzzlePartTwo
  * Advent Of Code 2016
  */
-class Puzzle
+class PuzzlePartTwo
 {
     private $input;
 
@@ -19,7 +21,31 @@ class Puzzle
         // Put puzzle input into string
         $this->input = file('input.txt');
 
+        $this->fixNumbersArray();
+
         $this->numberOfTriangles = 0;
+    }
+
+    /**
+     * Split an input array into columns and 3 elements chunks
+     * After that, merge the array so we end up with triplets
+     */
+    private function fixNumbersArray()
+    {
+        foreach ($this->input as $key => $line) {
+            $line = trim($line);
+            $numbers = preg_split('/\s+/', $line);
+            $numbers = array_map('trim', $numbers);
+
+            $firstColumnNumbers[] = $numbers[0];
+            $secondColumnNumbers[] = $numbers[1];
+            $thirdColumnNumbers[] = $numbers[2];
+        }
+        $first  = array_chunk($firstColumnNumbers, 3);
+        $second = array_chunk($secondColumnNumbers, 3);
+        $third  = array_chunk($thirdColumnNumbers, 3);
+
+        $this->input = array_merge($first, $second, $third);
     }
 
     /**
@@ -27,11 +53,7 @@ class Puzzle
      */
     public function countTriangles()
     {
-        foreach ($this->input as $line) {
-            $line = trim($line);
-            $numbers = preg_split('/\s+/', $line);
-            $numbers = array_map('trim', $numbers);
-
+        foreach ($this->input as $numbers) {
             if ($this->isTriangle($numbers)) {
                 $this->numberOfTriangles++;
             }
@@ -71,4 +93,3 @@ class Puzzle
 $puzzle = new Puzzle();
 $numberOfTriangles = $puzzle->countTriangles();
 echo 'Number of triangles: ' . $numberOfTriangles;
-
