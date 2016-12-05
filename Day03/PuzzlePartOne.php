@@ -3,6 +3,7 @@
 namespace Day03;
 
 /**
+ * Puzzle day 3
  * Class PuzzlePartOne
  * Advent Of Code 2016
  */
