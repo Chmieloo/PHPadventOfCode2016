@@ -2,13 +2,17 @@
 
 namespace Day06;
 
+use Abstraction\Puzzle;
+
 /**
  * Puzzle day 6
  * Class PuzzlePartOne
  * Advent Of Code 2016
  */
-class PuzzlePartOne
+class PuzzlePartOne extends Puzzle
 {
+    protected static $filename = 'input';
+
     private $input;
 
     private $message;
@@ -19,8 +23,18 @@ class PuzzlePartOne
      */
     public function __construct()
     {
-        // Put puzzle input into string
-        $this->input = file('input.txt');
+        $this->loadInput();
+    }
+
+    /**
+     * Load input file into class variable
+     * Use static variable to define file name
+     */
+    protected function loadInput()
+    {
+        if (file_exists(__DIR__ . '/' . static::$filename)) {
+            $this->input = file(__DIR__ . '/' . static::$filename);
+        }
     }
 
     /**
