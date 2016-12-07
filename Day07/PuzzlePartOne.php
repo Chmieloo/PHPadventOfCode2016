@@ -26,25 +26,17 @@ class PuzzlePartOne
     public function processInput()
     {
         $sum = 0;
+        $output = '';
         foreach ($this->input as $line) {
+            $regular = preg_split('/\[([a-z]+)\]/', $line);
+            $regular = join(' ', $regular);
 
-            $brackets = '';
-            $regular = '';
-
-            $strings = explode('[', $line);
-            $regular .= array_shift($strings);
-            var_dump($strings);
-
-            foreach ($strings as $string) {
-                $substrings = explode(']', $string);
-                foreach ($substrings as $substring) {
-                    $brackets .= $substring[0];
-                    $regular .= $substring[1];
-                }
-            }
+            preg_match_all('/\[([a-z]+)\]/', $line, $matches);
+            $brackets = join(' ', $matches[1]);
 
             if (!$this->isMirrored($brackets)) {
                 if ($this->isMirrored($regular)) {
+                    $output .= $line . PHP_EOL;
                     $sum++;
                 }
             }
@@ -60,11 +52,11 @@ class PuzzlePartOne
     public function isMirrored($string)
     {
         $result = false;
-        for ($i=0;$i<strlen($string)-2;$i++) {
+        for ($i=0;$i<strlen($string)-3;$i++) {
             $controlCharacters = substr($string, $i, 2);
             $reverseCharacters = strrev(substr($string, $i+2, 2));
 
-            if ($controlCharacters == $reverseCharacters) {
+            if ($controlCharacters == $reverseCharacters && $controlCharacters[0] != $controlCharacters[1]) {
                 return true;
             }
         }
