@@ -1,32 +1,32 @@
 <?php
 
-namespace Day04;
+namespace Puzzles\Day04;
+
+use Puzzles\Abstraction\Puzzle;
 
 /**
  * Puzzle day 4
  * Class PuzzlePartTwo
  * Advent Of Code 2016
  */
-class PuzzlePartTwo
+class PuzzlePartTwo extends Puzzle
 {
-    # File input
-    private $input;
+    private $searchPhrase = 'northpole object storage';
 
     # Output of result
     private $output;
 
     public function __construct()
     {
-        $this->input = file('input');
+        $this->loadInput();
         $this->processInput();
     }
 
-    /**
-     * Write to file
-     */
-    public function outputFile()
+    protected function loadInput()
     {
-        file_put_contents('output', print_r($this->output, true));
+        if (file_exists(__DIR__ . '/' . static::$fileName)) {
+            $this->input = file(__DIR__ . '/' . static::$fileName);
+        }
     }
 
     /**
@@ -70,10 +70,17 @@ class PuzzlePartTwo
                 $decryptedName .= $newCharacter;
             }
 
-            $this->output .= $decryptedName . ' ' . $shift . PHP_EOL;
+            if ($decryptedName == $this->searchPhrase) {
+                $this->output = $shift;
+            }
         }
     }
-}
 
-$puzzle = new PuzzlePartTwo();
-$puzzle->outputFile();
+    /**
+     * Output to file
+     */
+    public function renderSolution()
+    {
+        echo 'Sector ID: ' . $this->output . PHP_EOL;
+    }
+}

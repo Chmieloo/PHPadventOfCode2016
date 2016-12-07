@@ -1,8 +1,7 @@
 <?php
 
-require_once 'vendor/autoload.php';
-
-$test = new Day04\PuzzlePartOne();
+$loader = require 'vendor/autoload.php';
+$loader->add('Puzzles\\', __DIR__);
 
 $options = getopt('d:p:');
 if (empty($options)){
@@ -16,7 +15,7 @@ if (empty($options)){
 }
 
 if (isset($options['d']) && isset($options['p'])) {
-    echo "Puzzle for day " . $options['d'] . ', part ' . $options['p'] . PHP_EOL;
+    echo "Advent of Code 2016 | Puzzle for day " . $options['d'] . ', part ' . $options['p'] . PHP_EOL;
 }
 
 $fileNameMapping = [
@@ -28,7 +27,9 @@ $fileNameMapping = [
 $pathDirectory = 'Day' . str_pad($options['d'], 2, '0', STR_PAD_LEFT);
 $pathFile = 'PuzzlePart' . $fileNameMapping[$options['p']];
 
-$classPathName = $pathDirectory . '/' . $pathFile;
-$puzzle = new $classPathName;
+$className = 'Puzzles\\' . $pathDirectory . '\\' . $pathFile;
 
-var_dump($puzzle);
+$puzzleObject = new $className();
+if ($puzzleObject instanceof \Puzzles\Abstraction\Puzzle) {
+    $puzzleObject->renderSolution();
+}

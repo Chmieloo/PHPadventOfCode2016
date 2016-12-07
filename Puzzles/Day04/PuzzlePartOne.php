@@ -1,23 +1,35 @@
 <?php
 
-namespace Day04;
+namespace Puzzles\Day04;
+
+use Puzzles\Abstraction\Puzzle;
 
 /**
  * Puzzle day 4
  * Class PuzzlePartOne
  * Advent Of Code 2016
  */
-class PuzzlePartOne
+class PuzzlePartOne extends Puzzle
 {
-    # File input
-    private $input;
-
     private $sum;
 
     public function __construct()
     {
-        $this->input = file('input');
+        $this->initialize();
+        $this->loadInput();
+        $this->processInput();
+    }
+
+    private function initialize()
+    {
         $this->sum = 0;
+    }
+
+    protected function loadInput()
+    {
+        if (file_exists(__DIR__ . '/' . static::$fileName)) {
+            $this->input = file(__DIR__ . '/' . static::$fileName);
+        }
     }
 
     /**
@@ -26,8 +38,7 @@ class PuzzlePartOne
      */
     public function processInput()
     {
-
-        foreach ($this->input as $key => $line) {
+        foreach ($this->input as $line) {
             # Get the checksum
             $splitString = explode('[', $line);
             $encryptedName = $splitString[0];
@@ -64,7 +75,7 @@ class PuzzlePartOne
         # Get all individual letters
         $letters = str_split($string);
 
-        foreach ($letters as $key => $letter) {
+        foreach ($letters as $letter) {
             if (array_key_exists($letter, $checksumArray)) {
                 $checksumArray[$letter]++;
             } else {
@@ -80,8 +91,12 @@ class PuzzlePartOne
 
         return [$checksum, $number];
     }
-}
 
-$puzzle = new PuzzlePartOne();
-$sum = $puzzle->processInput();
-echo "Solution: " . $sum;
+    /**
+     * Direct output
+     */
+    public function renderSolution()
+    {
+        echo 'Sum of real rooms sector IDs: ' . $this->sum . PHP_EOL;
+    }
+}

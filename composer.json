@@ -1,5 +1,7 @@
 {
   "autoload": {
-    "psr-4": {"Aoc\\": "Puzzles/"}
+    "psr-4": {
+      "": "Puzzles/"
+    }
   }
 }
