@@ -2,14 +2,12 @@
 
 namespace Day06;
 
-use Abstraction\Puzzle;
-
 /**
  * Puzzle day 6
  * Class PuzzlePartOne
  * Advent Of Code 2016
  */
-class PuzzlePartOne extends Puzzle
+class PuzzlePartOne extends \Abstraction\Puzzle
 {
     protected static $filename = 'input';
 
