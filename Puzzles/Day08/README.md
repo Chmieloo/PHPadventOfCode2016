@@ -14,25 +14,29 @@ rotate column x=A by B shifts all of the pixels in column A (0 is the left colum
 For example, here is a simple sequence on a smaller screen:
 
 rect 3x2 creates a small rectangle in the top-left corner:
-
+```
 ooo....
 ooo....
 .......
+```
 rotate column x=1 by 1 rotates the second column down by one pixel:
-
+```
 o.o....
 ooo....
 .o.....
+```
 rotate row y=0 by 4 rotates the top row right by four pixels:
-
+```
 ....o.o
 ooo....
 .o.....
+```
 rotate column x=1 by 1 again rotates the second column down by one pixel, causing the bottom pixel to wrap back to the top:
-
+```
 .o..o.o
 o.o....
 .o.....
+```
 As you can see, this display technology is extremely powerful, and will soon dominate the tiny-code-displaying-screen market. That's what the advertisement on the back of the display tries to convince you, anyway.
 
 There seems to be an intermediate check of the voltage used by the display: after you swipe your card, if the screen did work, how many pixels should be lit?
