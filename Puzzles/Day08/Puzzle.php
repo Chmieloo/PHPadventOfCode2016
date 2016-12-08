@@ -6,7 +6,7 @@ use Puzzles\Abstraction\Puzzle as PuzzleAbstract;
 
 /**
  * Puzzle day 8
- * Class PuzzlePartOne
+ * Common class for day 8
  * Advent Of Code 2016
  */
 class Puzzle extends PuzzleAbstract
