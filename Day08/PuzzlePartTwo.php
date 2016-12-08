@@ -1,9 +1,9 @@
 <?php
 
-namespace Day07;
+namespace Day08;
 
 /**
- * Puzzle day 7
+ * Puzzle day 8
  * Class PuzzlePartOne
  * Advent Of Code 2016
  */
@@ -12,7 +12,14 @@ class PuzzlePartTwo
     # File input
     private $input;
 
-    private $sum;
+    private $cardMap = [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ];
 
     public function __construct()
     {
@@ -25,77 +32,91 @@ class PuzzlePartTwo
      */
     public function processInput()
     {
+        foreach ($this->input as $instruction) {
+            if (substr($instruction, 0, 4) == 'rect') {
+                $this->createRectangle($instruction);
+            } elseif (substr($instruction, 0, 10) == 'rotate row') {
+                $this->rotateRow($instruction);
+            } elseif (substr($instruction, 0, 13) == 'rotate column') {
+                $this->rotateColumn($instruction);
+            }
+        }
+
+        $countPixels = $this->countPixels();
+
+        for ($i=0;$i<6;$i++) {
+            $line = '';
+            for ($j=0;$j<50;$j++) {
+                if ($this->cardMap[$i][$j] == 0) {
+                    $line .= ' ';
+                } else {
+                    $line .= '#';
+                }
+            }
+            echo $line . PHP_EOL;
+        }
+        #file_put_contents('output',print_r($this->cardMap, true));
+
+        echo $countPixels . PHP_EOL;
+    }
+
+    private function countPixels()
+    {
         $sum = 0;
-        $output = '';
-        foreach ($this->input as $line) {
-            $regular = preg_split('/\[([a-z]+)\]/', $line);
-            $regular = join('..', $regular);
 
-            preg_match_all('/\[([a-z]+)\]/', $line, $matches);
-            $brackets = join('..', $matches[1]);
-
-            # Find the triplets
-            $triplets = $this->findTriplets($regular);
-
-            if ($this->hasTripletInBrackets($triplets, $brackets)) {
-                $sum++;
-            }
+        for ($i=0;$i<6;$i++) {
+            $sum += array_sum($this->cardMap[$i]);
         }
 
-        echo $sum . PHP_EOL;
+        return $sum;
     }
 
-    /**
-     * @param $triplets
-     * @param $brackets
-     * @return bool
-     */
-    private function hasTripletInBrackets($triplets, $brackets)
+    private function createRectangle($instruction)
     {
-        foreach ($triplets as $triplet) {
-            $reverseTriplet = $triplet[1] . $triplet[0] . $triplet[1];
-            if (strpos($brackets, $reverseTriplet) !== false) {
-                return true;
+        preg_match('/rect\s+(\d+)x(\d+)/', $instruction, $matches);
+        $x = $matches[1];
+        $y = $matches[2];
+
+        for ($i=0;$i<$x;$i++) {
+            for ($j=0;$j<$y;$j++) {
+                $this->cardMap[$j][$i] = 1;
             }
         }
-
-        return false;
     }
 
-    /**
-     * @param $string
-     * @return array
-     */
-    private function findTriplets($string)
+    private function rotateRow($instruction)
     {
-        $triplets = [];
-        for ($i=0;$i<strlen($string)-3;$i++) {
-            $triplet = substr($string, $i, 3);
-            if ($triplet[0] == $triplet[2]) {
-                $triplets[] = $triplet;
-            }
-        }
+        preg_match('/rotate row y=(\d+) by (\d+)/', $instruction, $matches);
 
-        return $triplets;
+        $row = $matches[1];
+        $shift = $matches[2];
+
+        for ($i=0;$i<$shift;$i++) {
+            $element = array_pop($this->cardMap[$row]);
+            array_unshift($this->cardMap[$row], $element);
+        }
     }
 
-    /**
-     * @param $string
-     * @return bool
-     */
-    public function isMirrored($string)
+    private function rotateColumn($instruction)
     {
-        $result = false;
-        for ($i=0;$i<strlen($string)-3;$i++) {
-            $controlCharacters = substr($string, $i, 2);
-            $reverseCharacters = strrev(substr($string, $i+2, 2));
+        preg_match('/rotate column x=(\d+) by (\d+)/', $instruction, $matches);
 
-            if ($controlCharacters == $reverseCharacters && $controlCharacters[0] != $controlCharacters[1]) {
-                return true;
-            }
+        $column = $matches[1];
+        $shift = $matches[2];
+
+        # Get cardMap column as an array
+        for ($i=0;$i<6;$i++) {
+            $col[] = $this->cardMap[$i][$column];
         }
 
-        return $result;
+        for ($i=0;$i<$shift;$i++) {
+            $element = array_pop($col);
+            array_unshift($col, $element);
+        }
+
+        for ($i=0;$i<6;$i++) {
+            $this->cardMap[$i][$column] = $col[$i];
+        }
     }
 }
 
