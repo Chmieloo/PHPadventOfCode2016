@@ -1,31 +1,44 @@
 <?php
 
-namespace Day08;
+namespace Puzzles\Day08;
+
+use Puzzles\Abstraction\Puzzle as PuzzleAbstract;
 
 /**
  * Puzzle day 8
  * Class PuzzlePartOne
  * Advent Of Code 2016
  */
-class PuzzlePartOne
+class Puzzle extends PuzzleAbstract
 {
-    # File input
-    private $input;
-
-    private $cardMap = [
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    ];
-
-    private $sum;
+    # Card representation
+    protected $cardMap;
 
     public function __construct()
     {
-        $this->input = file('input');
+        $this->initialize();
+        $this->loadInput();
+        $this->processInput();
+    }
+
+    protected function loadInput()
+    {
+        if (file_exists(__DIR__ . '/' . static::$fileName)) {
+            $this->input = file(__DIR__ . '/' . static::$fileName);
+        }
+    }
+
+    protected function initialize()
+    {
+        $cardMapRow = array_fill(0, 50, 0);
+        $this->cardMap = [
+            $cardMapRow,
+            $cardMapRow,
+            $cardMapRow,
+            $cardMapRow,
+            $cardMapRow,
+            $cardMapRow,
+        ];
     }
 
     /**
@@ -43,26 +56,13 @@ class PuzzlePartOne
                 $this->rotateColumn($instruction);
             }
         }
-
-        $countPixels = $this->countPixels();
-
-        #file_put_contents('output',print_r($this->cardMap, true));
-
-        echo $countPixels . PHP_EOL;
     }
 
-    private function countPixels()
-    {
-        $sum = 0;
-
-        for ($i=0;$i<6;$i++) {
-            $sum += array_sum($this->cardMap[$i]);
-        }
-
-        return $sum;
-    }
-
-    private function createRectangle($instruction)
+    /**
+     * Add pixels to array
+     * @param $instruction
+     */
+    protected function createRectangle($instruction)
     {
         preg_match('/rect\s+(\d+)x(\d+)/', $instruction, $matches);
         $x = $matches[1];
@@ -75,7 +75,10 @@ class PuzzlePartOne
         }
     }
 
-    private function rotateRow($instruction)
+    /**
+     * @param $instruction
+     */
+    protected function rotateRow($instruction)
     {
         preg_match('/rotate row y=(\d+) by (\d+)/', $instruction, $matches);
 
@@ -88,8 +91,14 @@ class PuzzlePartOne
         }
     }
 
-    private function rotateColumn($instruction)
+    /**
+     * @param $instruction
+     */
+    protected function rotateColumn($instruction)
     {
+        # Temporary column to hold the cardMap values
+        $col = [];
+
         preg_match('/rotate column x=(\d+) by (\d+)/', $instruction, $matches);
 
         $column = $matches[1];
@@ -109,8 +118,12 @@ class PuzzlePartOne
             $this->cardMap[$i][$column] = $col[$i];
         }
     }
-}
 
-$puzzle = new PuzzlePartOne();
-$sum = $puzzle->processInput();
-echo "Solution: " . $sum;
+    /**
+     * @return null
+     */
+    public function renderSolution()
+    {
+        return null;
+    }
+}
