@@ -1,19 +1,26 @@
 <?php
 
-namespace Day06;
+namespace Puzzles\Day06;
+
+use Puzzles\Abstraction\Puzzle as PuzzleAbstract;
 
 /**
  * Puzzle day 6
- * Class PuzzlePartOne
+ * Common class for day 6
  * Advent Of Code 2016
  */
-class PuzzlePartOne extends \Abstraction\Puzzle
+class Puzzle extends PuzzleAbstract
 {
-    protected static $filename = 'input';
+    protected $solution;
 
-    private $input;
+    /**
+     * Let's define most likely characters as 1 and least likely characters as 2 (in child classes)
+     * @var int
+     */
+    protected static $type;
 
-    private $message;
+    const MOST_LIKELY  = 1;
+    const LEAST_LIKELY = 2;
 
     /**
      * Puzzle constructor.
@@ -22,23 +29,17 @@ class PuzzlePartOne extends \Abstraction\Puzzle
     public function __construct()
     {
         $this->loadInput();
+        $this->processLines();
     }
 
     /**
-     * Load input file into class variable
-     * Use static variable to define file name
+     * @return null
      */
-    protected function loadInput()
-    {
-        if (file_exists(__DIR__ . '/' . static::$filename)) {
-            $this->input = file(__DIR__ . '/' . static::$filename);
-        }
-    }
 
     /**
      * @return int
      */
-    public function processLines()
+    protected function processLines()
     {
         $solution = '';
 
@@ -68,16 +69,29 @@ class PuzzlePartOne extends \Abstraction\Puzzle
 
         foreach ($positionsCount as $countArray) {
             $flippedArray = array_flip($countArray);
-            krsort($flippedArray);
+            if (static::$type == static::LEAST_LIKELY) {
+                ksort($flippedArray);
+            } elseif (static::$type == static::MOST_LIKELY) {
+                krsort($flippedArray);
+            }
             $solution .= array_shift($flippedArray);
         }
 
-        return $solution;
+        $this->solution = $solution;
+    }
+
+    protected function loadInput()
+    {
+        if (file_exists(__DIR__ . '/' . static::$fileName)) {
+            $this->input = file(__DIR__ . '/' . static::$fileName);
+        }
+    }
+
+    /**
+     * Direct output
+     */
+    public function renderSolution()
+    {
+        echo 'Message: ' . $this->solution . PHP_EOL;
     }
 }
-
-$puzzle = new PuzzlePartOne();
-$solution = $puzzle->processLines();
-echo $solution;
-
-

@@ -1,7 +1,6 @@
 <?php
 
 $loader = require 'vendor/autoload.php';
-$loader->add('Puzzles\\', __DIR__);
 
 $options = getopt('d:p:');
 if (empty($options)){
