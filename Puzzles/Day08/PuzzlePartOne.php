@@ -1,6 +1,6 @@
 <?php
 
-namespace Puzzle\Day08;
+namespace Puzzles\Day08;
 
 /**
  * Puzzle day 8
