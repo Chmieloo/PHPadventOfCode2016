@@ -9,55 +9,42 @@ namespace Puzzles\Day09;
  */
 class PuzzlePartTwo extends Puzzle
 {
+    private $length;
+
     public function processInput()
     {
-        $inputArray = [];
         $input = $this->input[0];
-        preg_match_all('/\((\d+)x(\d+)\)/', $input, $matches, PREG_OFFSET_CAPTURE);
-        preg_match_all('/([A-Z]+)/', $input, $matchesLetters, PREG_OFFSET_CAPTURE);
+        $this->length = $this->recursiveDecompression($input);
+    }
 
-        $tmpString = '';
-        $previousPosition = 0;
-        $previousLength = 0;
+    /**
+     * @param $string
+     * @return int
+     */
+    private function recursiveDecompression($string)
+    {
+        $length = strlen($string);
 
-        $i = 0;
-
-        foreach ($matches[0] as $compressionInfo) {
-            # If previous position + previous length equals this start position,
-            # add it to string
-            if (($previousPosition + $previousLength) == $compressionInfo[1]) {
-                $tmpString .= $compressionInfo[0];
-            } else {
-                $inputArray[] = $tmpString;
-                $tmpString = $compressionInfo[0];
+        for ($i = 0; $i < strlen($string); $i++) {
+            if ($string[$i] === '(') {
+                if (preg_match('/^\((\d+)x(\d+)\)/', substr($string, $i), $matches)) {
+                    $compressionInfo = $matches[0];
+                    $matchLength = $matches[1];
+                    $repetitions = $matches[2];
+                    # Beginning index of string to multiply
+                    $start = $i + strlen($compressionInfo);
+                    # String to multiply
+                    $matchStr = substr($string, $start, $matchLength);
+                    $decompressedLength = $this->recursiveDecompression($matchStr);
+                    # Substract one occurrence of substring to be multiplied and the compression info length
+                    $length += $decompressedLength * $repetitions - strlen($matchStr) - strlen($compressionInfo);
+                    # Move the pointer behind
+                    $i = $start + strlen($matchStr) - 1;
+                }
             }
-
-            $previousPosition = $compressionInfo[1];
-            $previousLength = strlen($compressionInfo[0]);
-
-            if ($i == (count($matches[0]) - 1)) {
-                $inputArray[] = $tmpString;
-            }
-            $i++;
         }
 
-        $sum = 0;
-        foreach ($inputArray as $data) {
-            preg_match_all('/\((\d+)x(\d+)\)/', $data, $matches, PREG_OFFSET_CAPTURE);
-            //var_dump($matches[2]);
-
-            $multiplication = 1;
-
-            foreach($matches[2] as $numbers) {
-                $multiplication *= $numbers[0];
-            }
-            echo $multiplication . PHP_EOL;
-            $sum += $multiplication;
-            //echo PHP_EOL;
-
-        }
-
-        echo $sum;
+        return $length;
     }
 
     /**
@@ -65,5 +52,6 @@ class PuzzlePartTwo extends Puzzle
      */
     public function renderSolution()
     {
+        echo 'Solution: ' . $this->length . PHP_EOL;
     }
 }
