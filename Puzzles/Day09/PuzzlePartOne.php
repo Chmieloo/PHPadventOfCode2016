@@ -16,7 +16,7 @@ class PuzzlePartOne extends Puzzle
         $length = 0;
 
         $input = $this->input[0];
-        $stringLength = strlen($input);
+        $inputStringLength = strlen($input);
 
         preg_match_all('/\((\d+)x(\d+)\)/', $input, $matches, PREG_OFFSET_CAPTURE);
 
@@ -28,36 +28,35 @@ class PuzzlePartOne extends Puzzle
         $compressionInfoPositions = array_keys($compressionArray);
 
         $pointer = 0;
-        do {
+        $resultString = '';
+
+        while ($pointer < $inputStringLength) {
+            var_dump($compressionInfoPositions);
             if (in_array($pointer, $compressionInfoPositions)) {
+                echo 'Pointer at: ' . $pointer . PHP_EOL;
                 # Get compression info
                 preg_match('/\((\d+)x(\d+)\)/', $compressionArray[$pointer], $matches);
                 $compressionString = $matches[0];
+
                 $numChars = $matches[1];
-                $numDuplications = $matches[2];
-                var_dump($compressionString);
+                $numMultiplications = $matches[2];
 
-                $multiplication = (int)$numChars * (int)$numDuplications;
-                $length += $multiplication;
+                $stringToMultiplicate = substr($input, ($pointer + strlen($compressionString)), $numChars);
+                $multiplicatedString = str_repeat($stringToMultiplicate, $numMultiplications);
 
-                $pointer += strlen($compressionString[0]) + $numChars;
+                $resultString .= $multiplicatedString;
+                $pointer += $numChars + strlen($compressionString) - 1;
+                echo 'Pointer at: ' . $pointer . PHP_EOL;
             } else {
-                $length++;
+                $resultString .= $input[$pointer];
             }
 
-
             $pointer++;
-        } while ($pointer < $stringLength);
 
+        }
 
-        var_dump($length);
-    }
-
-    /**
-     * @return int|number
-     */
-    private function countPixels()
-    {
+        //echo $resultString . PHP_EOL .
+        echo strlen($resultString) . PHP_EOL;
     }
 
     /**
@@ -65,6 +64,5 @@ class PuzzlePartOne extends Puzzle
      */
     public function renderSolution()
     {
-        echo 'Number of active pixels: ' . PHP_EOL;
     }
 }

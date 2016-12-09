@@ -9,37 +9,61 @@ namespace Puzzles\Day09;
  */
 class PuzzlePartTwo extends Puzzle
 {
-    /**
-     * Process input for puzzle
-     * @return int
-     */
     public function processInput()
     {
-        foreach ($this->input as $instruction) {
-            if (substr($instruction, 0, 4) == 'rect') {
-                $this->createRectangle($instruction);
-            } elseif (substr($instruction, 0, 10) == 'rotate row') {
-                $this->rotateRow($instruction);
-            } elseif (substr($instruction, 0, 13) == 'rotate column') {
-                $this->rotateColumn($instruction);
+        $inputArray = [];
+        $input = $this->input[0];
+        preg_match_all('/\((\d+)x(\d+)\)/', $input, $matches, PREG_OFFSET_CAPTURE);
+        preg_match_all('/([A-Z]+)/', $input, $matchesLetters, PREG_OFFSET_CAPTURE);
+
+        $tmpString = '';
+        $previousPosition = 0;
+        $previousLength = 0;
+
+        $i = 0;
+
+        foreach ($matches[0] as $compressionInfo) {
+            # If previous position + previous length equals this start position,
+            # add it to string
+            if (($previousPosition + $previousLength) == $compressionInfo[1]) {
+                $tmpString .= $compressionInfo[0];
+            } else {
+                $inputArray[] = $tmpString;
+                $tmpString = $compressionInfo[0];
             }
+
+            $previousPosition = $compressionInfo[1];
+            $previousLength = strlen($compressionInfo[0]);
+
+            if ($i == (count($matches[0]) - 1)) {
+                $inputArray[] = $tmpString;
+            }
+            $i++;
         }
 
-        $this->displayCardMap();
+        $sum = 0;
+        foreach ($inputArray as $data) {
+            preg_match_all('/\((\d+)x(\d+)\)/', $data, $matches, PREG_OFFSET_CAPTURE);
+            //var_dump($matches[2]);
+
+            $multiplication = 1;
+
+            foreach($matches[2] as $numbers) {
+                $multiplication *= $numbers[0];
+            }
+            echo $multiplication . PHP_EOL;
+            $sum += $multiplication;
+            //echo PHP_EOL;
+
+        }
+
+        echo $sum;
     }
 
-    private function displayCardMap()
+    /**
+     * Direct output
+     */
+    public function renderSolution()
     {
-        for ($i=0;$i<6;$i++) {
-            $line = '';
-            for ($j=0;$j<50;$j++) {
-                if ($this->cardMap[$i][$j] == 0) {
-                    $line .= ' ';
-                } else {
-                    $line .= '#';
-                }
-            }
-            echo $line . PHP_EOL;
-        }
     }
 }
