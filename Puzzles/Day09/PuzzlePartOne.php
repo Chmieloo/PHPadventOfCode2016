@@ -9,11 +9,11 @@ namespace Puzzles\Day09;
  */
 class PuzzlePartOne extends Puzzle
 {
-    private $decompresssed = '';
+    private $length;
 
     public function processInput()
     {
-        $length = 0;
+        $compressionArray = [];
 
         $input = $this->input[0];
         $inputStringLength = strlen($input);
@@ -31,9 +31,7 @@ class PuzzlePartOne extends Puzzle
         $resultString = '';
 
         while ($pointer < $inputStringLength) {
-            var_dump($compressionInfoPositions);
             if (in_array($pointer, $compressionInfoPositions)) {
-                echo 'Pointer at: ' . $pointer . PHP_EOL;
                 # Get compression info
                 preg_match('/\((\d+)x(\d+)\)/', $compressionArray[$pointer], $matches);
                 $compressionString = $matches[0];
@@ -46,17 +44,13 @@ class PuzzlePartOne extends Puzzle
 
                 $resultString .= $multiplicatedString;
                 $pointer += $numChars + strlen($compressionString) - 1;
-                echo 'Pointer at: ' . $pointer . PHP_EOL;
             } else {
                 $resultString .= $input[$pointer];
             }
 
             $pointer++;
-
         }
-
-        //echo $resultString . PHP_EOL .
-        echo strlen($resultString) . PHP_EOL;
+        $this->length =  strlen($resultString);
     }
 
     /**
@@ -64,5 +58,6 @@ class PuzzlePartOne extends Puzzle
      */
     public function renderSolution()
     {
+        echo  $this->length . PHP_EOL;
     }
 }
