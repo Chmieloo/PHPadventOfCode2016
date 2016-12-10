@@ -1,32 +1,21 @@
 <?php
 
-namespace Day02;
+namespace Puzzles\Day02;
 
 /**
  * Puzzle day 2
  * Class PuzzlePartOne
  * Advent Of Code 2016
  */
-class PuzzlePartOne
+class PuzzlePartOne extends Puzzle
 {
-    private $keypad = [
+    private $solution;
+
+    protected static $keypad = [
         [1, 2, 3],
         [4, 5, 6],
         [7, 8, 9]
     ];
-
-    # File input
-    private $input;
-
-    private $lastKeypadPosition;
-
-    public function __construct()
-    {
-        $this->input = file('input');
-
-        # Starting position (middle of $keypad)
-        $this->lastKeypadPosition = $this->keypad[1][1];
-    }
 
     /**
      * Process input for puzzle
@@ -62,30 +51,14 @@ class PuzzlePartOne
                 $lastCol = $newCol;
                 $lastRow = $newRow;
             }
-
-            echo 'Number ' . $key . ': ';
-            echo $this->keypad[$newRow][$newCol];
-            echo PHP_EOL;
-
+            $this->solution .= static::$keypad[$newRow][$newCol];
         }
+
     }
 
-    /**
-     * @return array
-     */
-    public function getKeypad()
+    public function renderSolution()
     {
-        return $this->keypad;
-    }
-
-    /**
-     * @param array $keypad
-     */
-    public function setKeypad($keypad)
-    {
-        $this->keypad = $keypad;
+        echo 'Solution: ' . $this->solution . PHP_EOL;
     }
 }
 
-$puzzle = new PuzzlePartOne();
-$puzzle->processInput();
