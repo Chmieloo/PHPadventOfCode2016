@@ -11,7 +11,9 @@ use Puzzles\Abstraction\Puzzle as PuzzleAbstract;
  */
 class Puzzle extends PuzzleAbstract
 {
-    protected static $fileName = 'input2';
+    protected $counter;
+
+    private $visualize;
 
     protected $floors;
     protected $numElements;
@@ -21,6 +23,8 @@ class Puzzle extends PuzzleAbstract
     public function __construct()
     {
         $this->currentElevatorFloor = 1;
+        $this->counter = 0;
+        $this->visualize = false;
 
         $this->loadInput();
         $this->processInput();
@@ -44,26 +48,34 @@ class Puzzle extends PuzzleAbstract
             $this->numElements += count($floor);
         }
 
-        $this->printFloors();
+        if ($this->visualize) {
+            $this->printFloors();
+        }
 
         $counter = 0;
-        while (count($this->floors[4]) < 14)
+        while (count($this->floors[4]) < (count($this->floors, COUNT_RECURSIVE) - count(array_keys($this->floors))))
         {
-
             while($this->findUpMovableElements($this->currentElevatorFloor)) {
+                if ($this->visualize) {
+                    $this->printFloors();
+                }
                 $counter++;
-                $this->printFloors();
             }
 
             #Move one item (or two ?) downstairs until first non empty floor
             while($this->findDownMovableElements($this->currentElevatorFloor)) {
+                if ($this->visualize) {
+                    $this->printFloors();
+                }
                 $counter++;
-                $this->printFloors();
             }
 
         }
-        echo $counter. PHP_EOL;
 
+        if ($this->visualize) {
+            $this->printFloors();
+        }
+        $this->counter = $counter;
     }
 
     /**
@@ -132,7 +144,7 @@ class Puzzle extends PuzzleAbstract
     private function findDownMovableElements($floorNum)
     {
         # Check if the floor has elements
-        if (!count($this->floors[$floorNum - 1]) || $floorNum == 1) {
+        if ($floorNum == 1 || !count($this->floors[$floorNum - 1])) {
             return false;
         }
 

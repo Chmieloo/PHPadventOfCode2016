@@ -9,11 +9,13 @@ namespace Puzzles\Day11;
  */
 class PuzzlePartOne extends Puzzle
 {
+    protected static $fileName = 'parsedinput1';
+
     /**
      * Direct output
      */
     public function renderSolution()
     {
-        echo 'Solution: ' . $this->botNumber . PHP_EOL;
+        echo 'Solution: ' . $this->counter . PHP_EOL;
     }
 }

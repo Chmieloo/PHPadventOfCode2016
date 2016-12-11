@@ -9,12 +9,13 @@ namespace Puzzles\Day11;
  */
 class PuzzlePartTwo extends Puzzle
 {
+    protected static $fileName = 'parsedinput2';
+
     /**
      * Direct output
      */
     public function renderSolution()
     {
-        $multiply = $this->outputs[0] * $this->outputs[1] * $this->outputs[2];
-        echo 'Solution: ' . $multiply . PHP_EOL;
+        echo 'Solution: ' . $this->counter . PHP_EOL;
     }
 }

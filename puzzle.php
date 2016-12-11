@@ -1,5 +1,5 @@
 <?php
-error_reporting(E_ERROR);
+error_reporting(E_ALL);
 $loader = require 'vendor/autoload.php';
 
 $options = getopt('d:p:');
