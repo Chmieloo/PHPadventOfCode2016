@@ -202,6 +202,14 @@ class Puzzle extends PuzzleAbstract
         return false;
     }
 
+
+    /**
+     * TODO The floor is safe when:
+     * 1. It is empty
+     * 2. Has microchips only
+     * 3. Has all elements paired and / or the rest are generators
+     */
+
     /**
      * @param $floor
      * @return bool
@@ -274,10 +282,6 @@ class Puzzle extends PuzzleAbstract
                 }
             }
 
-
-            #$numFree = $this->numElements - count($this->floors[$i]);
-            #$fill = str_repeat('--- ', $numFree);
-            //$floorString = $i . ' ' . $fill . join(' ', $this->floors[$i]) ;
             if ($i == $this->currentElevatorFloor) {
                 $floorString .= ' [E]';
             }
