@@ -9,12 +9,18 @@ namespace Puzzles\Day12;
  */
 class PuzzlePartOne extends Puzzle
 {
-    protected $counter;
+    protected static $registers = [
+        'a' => 0,
+        'b' => 0,
+        'c' => 0,
+        'd' => 0,
+    ];
+
     /**
      * Direct output
      */
     public function renderSolution()
     {
-        echo 'Solution: ' . $this->counter . PHP_EOL;
+        echo 'Solution: ' . static::$registers['a'] . PHP_EOL;
     }
 }

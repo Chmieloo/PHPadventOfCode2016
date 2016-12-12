@@ -1,6 +1,6 @@
 <?php
 
-namespace Puzzles\Day11;
+namespace Puzzles\Day12;
 
 /**
  * Puzzle day 11
@@ -9,13 +9,18 @@ namespace Puzzles\Day11;
  */
 class PuzzlePartTwo extends Puzzle
 {
-    protected static $fileName = 'parsedinput2';
+    protected static $registers = [
+        'a' => 0,
+        'b' => 0,
+        'c' => 1,
+        'd' => 0,
+    ];
 
     /**
      * Direct output
      */
     public function renderSolution()
     {
-        echo 'Solution: ' . $this->counter . PHP_EOL;
+        echo 'Solution: ' . static::$registers['a'] . PHP_EOL;
     }
 }

@@ -11,12 +11,7 @@ use Puzzles\Abstraction\Puzzle as PuzzleAbstract;
  */
 class Puzzle extends PuzzleAbstract
 {
-    protected $registers = [
-        'a' => 0,
-        'b' => 0,
-        'c' => 1,
-        'd' => 0,
-    ];
+    protected static $registers;
     protected $pointer = 0;
 
     public function __construct()
@@ -34,42 +29,31 @@ class Puzzle extends PuzzleAbstract
 
     public function processInput()
     {
-        $j = 0;
         do {
             $this->processInstruction($this->pointer);
-            //echo $this->registers['a'] . ' ' . $this->registers['b'] . PHP_EOL;
-            $j++;
         } while ($this->pointer < count($this->input));
-
-        echo $j . PHP_EOL;
-        var_dump($this->registers);
     }
 
     private function processInstruction($pointer)
     {
-        //echo 'Processing instruction: ' . ($pointer + 1). PHP_EOL;
         $line = $this->input[$pointer];
         $data = explode(' ', $line);
 
         switch ($data[0]) {
             case 'cpy':
                 $this->instructionCopy($data);
-                $this->display();
                 $this->pointer++;
                 break;
             case 'inc':
                 $this->instructionIncrease($data);
-                $this->display();
                 $this->pointer++;
                 break;
             case 'dec':
                 $this->instructionDecrease($data);
-                $this->display();
                 $this->pointer++;
                 break;
             case 'jnz':
                 $this->instructionJump($data);
-                $this->display();
                 break;
         }
     }
@@ -81,22 +65,22 @@ class Puzzle extends PuzzleAbstract
 
         # integer to register
         if (is_numeric($from)) {
-            $this->registers[$to] = $from;
+            static::$registers[$to] = $from;
         } else {
-            $this->registers[$to] = $this->registers[$from];
+            static::$registers[$to] = static::$registers[$from];
         }
     }
 
     private function instructionIncrease($instruction)
     {
         $key = trim($instruction[1]);
-        $this->registers[$key]++;
+        static::$registers[$key]++;
     }
 
     private function instructionDecrease($instruction)
     {
         $key = trim($instruction[1]);
-        $this->registers[$key]--;
+        static::$registers[$key]--;
     }
 
     private function instructionJump($instruction)
@@ -106,25 +90,19 @@ class Puzzle extends PuzzleAbstract
 
         # integer to register
         if (is_numeric($value)) {
-            # Check if it is 0
             if ($value == 0) {
                 $this->pointer++;
             } else {
                 $this->pointer = $this->pointer + $to;
             }
         } else {
-            $registryValue = $this->registers[$value];
+            $registryValue = static::$registers[$value];
             if ($registryValue == 0) {
                 $this->pointer++;
             } else {
                 $this->pointer = $this->pointer + $to;
             }
         }
-    }
-
-    private function display()
-    {
-        //var_dump($this->registers);
     }
 
     /**
