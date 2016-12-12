@@ -79,6 +79,27 @@ class Puzzle extends PuzzleAbstract
     }
 
     /**
+     * Get all combination of elements to move up (or down)
+     * TODO sort result to prefer generators to be picked first
+     * @param $floor
+     * @return array
+     */
+    private function getAllCombinations($floor)
+    {
+        $combinations = [];
+        for ($i = 0; $i < count($floor) - 1; $i++) {
+            for ($j = $i + 1; $j <= count($floor) - 1; $j++) {
+                $combinations[] = [
+                    $floor[$i],
+                    $floor[$j]
+                ];
+            }
+        }
+
+        return $combinations;
+    }
+
+    /**
      * @param $floorNum
      * @return bool
      */
@@ -89,50 +110,43 @@ class Puzzle extends PuzzleAbstract
             return false;
         }
 
-        # Check if this floor has matching elements and move them up
-        if ($element = $this->hasMatchingElements($this->floors[$floorNum])) {
-            $matchingElement = $this->getMatchingEntity($element);
-
-            # Remove this pair from the floor and test it if safe
-            $tmpFloor = array_flip($this->floors[$floorNum]);
-            unset($tmpFloor[$element]);
-            unset($tmpFloor[$matchingElement]);
-            $tmpFloor = array_flip($tmpFloor);
-
-            if ($this->isFloorSafe($tmpFloor) && count($this->elevator) < 2) {
-                $this->elevator[] = $element;
-                $this->elevator[] = $matchingElement;
-            }
-        }
-
         # We did not find anything to match above floor
         # Let's check if we can move pair up
         if (!count($this->elevator)) {
-            # Get the elements from the floor above
-            $aboveElements = $this->floors[$floorNum + 1];
-            foreach ($aboveElements as $aboveElement) {
-                $matchingElement = $this->getMatchingEntity($aboveElement);
-                if (in_array($matchingElement, $this->floors[$floorNum])) {
-                    # If we remove this element from this floor, is it still safe ?
+            /**
+             * Check every double element
+             */
+            $thisFloorCombinations = $this->getAllCombinations($this->floors[$floorNum]);
 
-                    $tmpFloor = array_flip($this->floors[$floorNum]);
-                    unset($tmpFloor[$matchingElement]);
-                    $tmpFloor = array_flip($tmpFloor);
+            foreach ($thisFloorCombinations as $doubles) {
+                # Test next floor
+                $testNextFloor = array_merge($this->floors[$floorNum + 1], $doubles);
+                $testThisFloor = array_diff($this->floors[$floorNum], $doubles);
 
-                    if ($this->isFloorSafe($tmpFloor) && count($this->elevator) < 2) {
-                        $this->elevator[] = $matchingElement;
-                    }
+                if ($this->isFloorSafe($testNextFloor) &&
+                    $this->isFloorSafe($testThisFloor)
+                ) {
+                    $this->elevator[] = $doubles;
+                    break;
                 }
             }
+
+            /**
+             * Check every single element
+             */
         }
 
-        # Current floor is difference between actual state and the elevator
-        $this->floors[$floorNum] = array_diff($this->floors[$floorNum], $this->elevator);
+        if (count($this->elevator)) {
+            # Current floor is difference between actual state and the elevator
+            $this->floors[$floorNum] = $testThisFloor;
 
-        # Move the elevator up with elements
-        $this->floors[$floorNum + 1] = array_merge($this->floors[$floorNum + 1], $this->elevator);
-        $this->currentElevatorFloor++;
-        $this->elevator = [];
+            # Move the elevator up with elements
+            $this->floors[$floorNum + 1] = $testNextFloor;
+            $this->currentElevatorFloor++;
+            $this->elevator = [];
+        } else {
+            return false;
+        }
 
         return true;
     }
@@ -202,26 +216,22 @@ class Puzzle extends PuzzleAbstract
         return false;
     }
 
-
-    /**
-     * TODO The floor is safe when:
-     * 1. It is empty
-     * 2. Has microchips only
-     * 3. Has all elements paired and / or the rest are generators
-     */
-
     /**
      * @param $floor
      * @return bool
      */
     private function isFloorSafe($floor)
     {
-        # Empty floor = safe
+        /**
+         * The floor is safe when it is empty
+         */
         if (count($floor) == 0) {
             return true;
         }
 
-        # Microchips only = safe
+        /**
+         * The floor is safe when it has only one type of elements
+         */
         $types = [];
         foreach ($floor as $element) {
             $elemType = substr($element, -1);
@@ -233,29 +243,29 @@ class Puzzle extends PuzzleAbstract
             return true;
         }
 
-        # If there are more microchips than generators
-        $microchips = 0;
-        $generators = 0;
+        /**
+         * All elements are pairs
+         */
+        $notMatched = [];
         foreach ($floor as $element) {
-            if (substr($element, 0, -1) == 'M') {
-                $microchips++;
-            } elseif (substr($element, 0, -1) == 'G') {
-                $generators++;
-            }
-        }
-
-        $pairs = [];
-        # If it has at least one G/M pair
-        foreach ($floor as $element) {
-            $elemType = substr($element, 0, 2);
-            if (in_array($elemType, $pairs)) {
-                return true;
+            # take every element and check if there is a pair
+            $matchingElement = $this->getMatchingEntity($element);
+            if (in_array($matchingElement, $floor)) {
+                # It has a matching element, let's leave it
             } else {
-                $pairs[] = $elemType;
+                $notMatched[] = $element;
             }
         }
 
-        return false;
+        $safeOnly = true;
+        foreach ($notMatched as $element) {
+            if (substr($element, -1) == 'M') {
+                $safeOnly = false;
+                break;
+            }
+        }
+
+        return $safeOnly;
     }
 
     private function printFloors()
