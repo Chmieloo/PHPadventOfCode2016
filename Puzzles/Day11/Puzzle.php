@@ -24,7 +24,7 @@ class Puzzle extends PuzzleAbstract
     {
         $this->currentElevatorFloor = 1;
         $this->counter = 0;
-        $this->visualize = false;
+        $this->visualize = true;
 
         $this->loadInput();
         $this->processInput();
@@ -225,6 +225,17 @@ class Puzzle extends PuzzleAbstract
             return true;
         }
 
+        # If there are more microchips than generators
+        $microchips = 0;
+        $generators = 0;
+        foreach ($floor as $element) {
+            if (substr($element, 0, -1) == 'M') {
+                $microchips++;
+            } elseif (substr($element, 0, -1) == 'G') {
+                $generators++;
+            }
+        }
+
         $pairs = [];
         # If it has at least one G/M pair
         foreach ($floor as $element) {
@@ -241,18 +252,40 @@ class Puzzle extends PuzzleAbstract
 
     private function printFloors()
     {
+        # Get all elements
+        $elements = [];
+        foreach ($this->floors as $floor) {
+            $elements = array_merge($elements, $floor);
+        }
+        sort($elements);
+
         for ($i = count($this->floors); $i >= 1; $i--) {
             sort($this->floors[$i]);
-            $numFree = $this->numElements - count($this->floors[$i]);
-            $fill = str_repeat('--- ', $numFree);
-            $floorString = $i . ' ' . $fill . join(' ', $this->floors[$i]) ;
+
+            $floorString = $i . ' ';
+
+            for ($j = 0; $j < count($elements); $j++) {
+                # Get element from all elements
+                $currentElement = $elements[$j];
+                if (in_array($currentElement, $this->floors[$i])) {
+                    $floorString .= $currentElement . ' ';
+                } else {
+                    $floorString .= '--- ';
+                }
+            }
+
+
+            #$numFree = $this->numElements - count($this->floors[$i]);
+            #$fill = str_repeat('--- ', $numFree);
+            //$floorString = $i . ' ' . $fill . join(' ', $this->floors[$i]) ;
             if ($i == $this->currentElevatorFloor) {
                 $floorString .= ' [E]';
             }
             $floorString .= PHP_EOL;
             echo $floorString;
         }
-        echo PHP_EOL;
+        $separator = str_repeat('___', count($elements)) . str_repeat('_', (count($elements) + 1));
+        echo $separator . PHP_EOL . PHP_EOL;
     }
 
     /**
