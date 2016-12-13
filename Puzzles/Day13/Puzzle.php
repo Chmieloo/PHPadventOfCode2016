@@ -11,13 +11,8 @@ use Puzzles\Abstraction\Puzzle as PuzzleAbstract;
  */
 class Puzzle extends PuzzleAbstract
 {
-    /*
-     * Find x*x + 3*x + 2*x*y + y + y*y.
-Add the office designer's favorite number (your puzzle input).
-Find the binary representation of that sum; count the number of bits that are 1.
-If the number of bits that are 1 is even, it's an open space.
-If the number of bits that are 1 is odd, it's a wall.
-     */
+    protected $solution1;
+    protected $solution2;
 
     private $exitX = 31;
     private $exitY = 39;
@@ -42,12 +37,12 @@ If the number of bits that are 1 is odd, it's a wall.
 
     private function constructLabyrinth()
     {
-        for ($i = 0; $i <= $this->exitX; $i++) {
-            for ($j = 0; $j <= $this->exitY; $j++) {
+        for ($i = 0; $i <= $this->exitX + 1; $i++) {
+            for ($j = 0; $j <= $this->exitY + 1; $j++) {
                 if ($this->spaceType($i, $j) == 0) {
-                    $this->labyrinth[$i][$j] = '.';
+                    $this->labyrinth[$i][$j] = '...';
                 } else {
-                    $this->labyrinth[$i][$j] = '#';
+                    $this->labyrinth[$i][$j] = '███';
                 }
             }
         }
@@ -64,21 +59,86 @@ If the number of bits that are 1 is odd, it's a wall.
         return ($sum % 2);
     }
 
-    public function processInput()
+    private function processInput()
     {
-        #$spaceType = $this->spaceType($this->exitX, $this->exitY);
-        #var_dump($spaceType);
-        $this->drawLabyrinth();
+        $counter = 0;
+        $this->labyrinth[1][1] = 0;
+        # A bit dirty way to solve it since there has to be enough loops to fill all neighbors
+        # Possible check would be to keep a flag indicating if there are more elements < 50 with neighbors
+        for($x = 0; $x < 20; $x ++) {
+            for ($i = 0; $i <= $this->exitX + 10; $i++) {
+                for ($j = 0; $j <= $this->exitY + 10; $j++) {
+                    if (isset($this->labyrinth[$i][$j]) && is_numeric($this->labyrinth[$i][$j])) {
+
+                        # Find neighbors for these coordinates
+                        $possibleMoves = $this->possibleMoves($i, $j);
+
+                        foreach ($possibleMoves as $possibleMove) {
+                            if (isset($this->labyrinth[$possibleMove[0]][$possibleMove[1]]) &&
+                                is_numeric($this->labyrinth[$possibleMove[0]][$possibleMove[1]])) {
+                            } else {
+                                $this->labyrinth[$possibleMove[0]][$possibleMove[1]] = $this->labyrinth[$i][$j] + 1;
+                                $counter++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        $visited = 0;
+        for ($i = 0; $i <= $this->exitX + 10; $i++) {
+            for ($j = 0; $j <= $this->exitY + 10; $j++) {
+                if (isset($this->labyrinth[$i][$j]) &&
+                    is_numeric($this->labyrinth[$i][$j]) &&
+                    $this->labyrinth[$i][$j] <= 50
+                ) {
+                    $visited++;
+                }
+            }
+        }
+
+        $this->solution1 = $this->labyrinth[$this->exitX][$this->exitY];
+        $this->solution2 = $visited;
+    }
+
+    /**
+     * @param $x
+     * @param $y
+     * @return array
+     */
+    public function possibleMoves($x, $y)
+    {
+        $possibleMoves = [];
+        $up = [$x - 1, $y];
+        $left = [$x, $y - 1];
+        $down = [$x + 1, $y];
+        $right = [$x, $y + 1];
+
+        if ($left[0] >= 0 && $left[1] >= 0 && $this->spaceType($left[0], $left[1]) == 0) {
+            $possibleMoves[] = $left;
+        }
+        if ($down[0] >= 0 && $down[1] >= 0 && $this->spaceType($down[0], $down[1]) == 0) {
+            $possibleMoves[] = $down;
+        }
+        if ($right[0] >= 0 && $right[1] >= 0 && $this->spaceType($right[0], $right[1]) == 0) {
+            $possibleMoves[] = $right;
+        }
+        if ($up[0] >= 0 && $up[1] >= 0 && $this->spaceType($up[0], $up[1]) == 0) {
+            $possibleMoves[] = $up;
+        }
+
+        return $possibleMoves;
     }
 
     public function drawLabyrinth()
     {
         $string = '';
-        for ($i = 0; $i <= $this->exitX; $i++) {
-            for ($j = 0; $j <= $this->exitY; $j++) {
-                $string .= $this->labyrinth[$i][$j];
+        for ($i = 0; $i <= $this->exitX + 1; $i++) {
+            for ($j = 0; $j <= $this->exitY + 1; $j++) {
+                $string .= str_pad($this->labyrinth[$i][$j], 3, 0, STR_PAD_LEFT) . ' ';
             }
-            $string .= PHP_EOL;
+            $string .= PHP_EOL . PHP_EOL;
         }
 
         echo $string;
