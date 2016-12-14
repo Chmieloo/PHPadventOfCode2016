@@ -5,52 +5,59 @@ namespace Puzzles\Day14;
 use Puzzles\Abstraction\Puzzle as PuzzleAbstract;
 
 /**
- * Puzzle day 12
- * Common class for day 12
+ * Puzzle day 14
+ * Common class for day 14
  * Advent Of Code 2016
  */
 class Puzzle extends PuzzleAbstract
 {
     protected static $salt;
     protected $validHashes;
+    private $displayIndexes;
 
     public function __construct()
     {
         $this->loadInput();
+        $this->initialize();
         $this->processInput();
     }
 
     protected function loadInput()
     {
-        static::$salt = $salt = 'ngcjuoqr';
-        $this->validHashes = [];
     }
 
+    private function initialize()
+    {
+        static::$salt = 'ngcjuoqr';
+        $this->validHashes = [];
+        $this->displayIndexes = true;
+    }
+
+    /**
+     * @param $index
+     * @return string
+     */
     protected static function getHash($index)
     {
-        $hash = md5(static::$salt . $index);
-/*
-        for ($x = 1; $x <= 2016; $x++) {
-            $hash = md5($hash);
-        }
-*/
-        return $hash;
+        return md5(static::$salt . $index);
     }
 
+    /**
+     * Return false if not valid, index of hash if valid
+     * @param $index
+     * @return bool|integer
+     */
     private function isValidHash3($index)
     {
         $hash = static::getHash($index);
         preg_match('/(.)\1\1/', $hash, $matches);
         if ($matches) {
-            $str = $index . ' ' . $matches[0] . ' ';
             $char = $matches[0][0];
             for ($j = $index + 1; $j <= $index + 1000; $j++) {
                 $hash5 = static::getHash($j);
                 preg_match('/[' . $char . ']{5}/', $hash5, $matches5);
                 if ($matches5) {
-                    $str .= $matches5[0] . ' ' . PHP_EOL;
-                    var_dump($hash);
-                    return $str;
+                    return $index;
                 }
             }
         }
@@ -66,6 +73,9 @@ class Puzzle extends PuzzleAbstract
         {
             if ($valid = $this->isValidHash3($i)) {
                 $validHashes[$i] = $valid;
+                if ($this->displayIndexes) {
+                    echo $valid . PHP_EOL;
+                }
             }
 
             if (count($validHashes) == 64) {
@@ -78,10 +88,11 @@ class Puzzle extends PuzzleAbstract
     }
 
     /**
-     * @return null
+     * Direct output
      */
     public function renderSolution()
     {
-        return null;
+        $lastHash = array_pop($this->validHashes);
+        echo 'Solution: ' . $lastHash . PHP_EOL;
     }
 }

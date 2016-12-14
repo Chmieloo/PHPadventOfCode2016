@@ -18,12 +18,4 @@ class PuzzlePartTwo extends Puzzle
 
         return $hash;
     }
-
-    /**
-     * Direct output
-     */
-    public function renderSolution()
-    {
-        echo 'Solution: ' . static::$registers['a'] . PHP_EOL;
-    }
 }
