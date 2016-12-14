@@ -9,8 +9,12 @@ namespace Puzzles\Day14;
  */
 class PuzzlePartOne extends Puzzle
 {
+    protected static $something;
     protected static function getHash($index)
     {
+        if (isset(static::$something[$index])) {
+            return static::$something[$index];
+        }
         return md5(static::$salt . $index);
     }
 }
