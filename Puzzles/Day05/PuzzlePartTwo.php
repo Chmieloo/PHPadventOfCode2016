@@ -1,30 +1,24 @@
 <?php
 
-namespace Day05;
+namespace Puzzles\Day05;
 
 /**
  * Puzzle day 5
  * Class PuzzlePartTwo
  * Advent Of Code 2016
  */
-class PuzzlePartTwo
+class PuzzlePartTwo extends Puzzle
 {
-    private $inputString;
-    private $password = [];
-
-    public function __construct($input)
-    {
-        $this->inputString = $input;
-    }
+    protected $password = [];
 
     /**
      * @return string
      */
-    public function checkHash()
+    public function getPassword()
     {
         $i = 0;
         do {
-            $hashInput = $this->inputString . $i;
+            $hashInput = $this->input . $i;
             $hash = md5($hashInput);
             if (substr($hash, 0, 5) === '00000') {
                 $char6 = substr($hash, 5, 1);
@@ -38,20 +32,10 @@ class PuzzlePartTwo
             $i++;
         } while (count($this->password) < 8);
 
+        $pass = $this->password;
+        ksort($pass);
+        $this->password = join($pass);
+
         return $this->password;
     }
-
-    /**
-     * @return string
-     */
-    public function getPassword()
-    {
-        return $this->checkHash();
-    }
 }
-
-$input = 'reyedfim';
-$puzzle = new PuzzlePartOne($input);
-$pass = $puzzle->getPassword();
-ksort($pass);
-var_dump(join($pass));
