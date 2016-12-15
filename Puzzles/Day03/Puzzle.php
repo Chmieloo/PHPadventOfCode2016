@@ -1,28 +1,34 @@
 <?php
 
-namespace Day03;
+namespace Puzzles\Day03;
+
+use Puzzles\Abstraction\Puzzle as PuzzleAbstract;
 
 /**
- * Puzzle day 3
- * Class PuzzlePartOne
+ * Puzzle day 03
+ * Common class for day 03
  * Advent Of Code 2016
  */
-class PuzzlePartOne
+class Puzzle extends PuzzleAbstract
 {
-    private $input;
+    protected $numberOfTriangles = 0;
 
-    private $numberOfTriangles;
-
-    /**
-     * Puzzle constructor.
-     * Load the file into class variable
-     */
     public function __construct()
     {
-        // Put puzzle input into string
-        $this->input = file('input.txt');
+        $this->loadInput();
+        $this->processInput();
+    }
 
-        $this->numberOfTriangles = 0;
+    protected function loadInput()
+    {
+        if (file_exists(__DIR__ . '/' . static::$fileName)) {
+            $this->input = file(__DIR__ . '/' . static::$fileName);
+        }
+    }
+
+    protected function processInput()
+    {
+        $this->countTriangles();
     }
 
     /**
@@ -47,7 +53,7 @@ class PuzzlePartOne
      * @param $numbers
      * @return bool
      */
-    private function isTriangle($numbers)
+    protected function isTriangle($numbers)
     {
         if (is_array($numbers)) {
             if (is_numeric($numbers[0]) &&
@@ -69,9 +75,12 @@ class PuzzlePartOne
             }
         }
     }
+
+    /**
+     * Direct output
+     */
+    public function renderSolution()
+    {
+        echo 'Solution: ' . $this->numberOfTriangles . PHP_EOL;
+    }
 }
-
-$puzzle = new Puzzle();
-$numberOfTriangles = $puzzle->countTriangles();
-echo 'Number of triangles: ' . $numberOfTriangles;
-
