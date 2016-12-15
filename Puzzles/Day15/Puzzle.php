@@ -5,19 +5,19 @@ namespace Puzzles\Day15;
 use Puzzles\Abstraction\Puzzle as PuzzleAbstract;
 
 /**
- * Puzzle day 14
- * Common class for day 14
+ * Puzzle day 15
+ * Common class for day 15
  * Advent Of Code 2016
  */
 class Puzzle extends PuzzleAbstract
 {
     protected $input;
     protected $machine;
+    protected $solution;
 
     public function __construct()
     {
         $this->loadInput();
-        $this->initialize();
         $this->processInput();
     }
 
@@ -26,10 +26,6 @@ class Puzzle extends PuzzleAbstract
         if (file_exists(__DIR__ . '/' . static::$fileName)) {
             $this->input = file(__DIR__ . '/' . static::$fileName);
         }
-    }
-
-    private function initialize()
-    {
     }
 
     public function processInput()
@@ -44,21 +40,22 @@ class Puzzle extends PuzzleAbstract
 
             $this->machine[$diskRow] = [$currentDiskPosition, $diskMaxPositions];
         }
-        $this->printMachine();
 
-        #for ($i = 1; $i < 100; $i++) {
         $i = 0;
         while (1) {
-            //$this->printMachine();
             if ($this->checkThrough($i)) {
                 echo ($i - 1) . PHP_EOL;
+                $this->solution = $i - 1;
                 break;
             }
             $i++;
         }
-
     }
 
+    /**
+     * @param $step
+     * @return bool
+     */
     private function checkThrough($step)
     {
         $pass = true;
@@ -72,28 +69,11 @@ class Puzzle extends PuzzleAbstract
         return $pass;
     }
 
-    private function printMachine()
-    {
-        for ($i = 1; $i <= 6; $i++) {
-
-            $floorString = $i . ' | ';
-
-            for ($j = 0; $j < count($this->machine[$i]); $j++) {
-                # Get element from all elements
-                $currentElement = $this->machine[$i][$j];
-                $floorString .= $currentElement . ' ';
-            }
-
-            echo $floorString. PHP_EOL;
-        }
-        echo PHP_EOL . PHP_EOL;
-    }
-
     /**
      * Direct output
      */
     public function renderSolution()
     {
-        echo '';
+        echo 'Solution: ' . $this->solution;
     }
 }
