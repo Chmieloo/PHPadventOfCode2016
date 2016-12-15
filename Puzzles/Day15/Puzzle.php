@@ -42,19 +42,16 @@ class Puzzle extends PuzzleAbstract
             $diskMaxPositions = $matches[2];
             $currentDiskPosition = $matches[3];
 
-            $this->machine[$diskRow] = array_fill(0, $diskMaxPositions, 0);
-            $this->machine[$diskRow][$currentDiskPosition] = 1;
+            $this->machine[$diskRow] = [$currentDiskPosition, $diskMaxPositions];
         }
-
         $this->printMachine();
 
         #for ($i = 1; $i < 100; $i++) {
-        $i = 1;
+        $i = 0;
         while (1) {
-            $this->machineTick();
-            $this->printMachine();
-            if ($this->checkThrough()) {
-                echo $i;
+            //$this->printMachine();
+            if ($this->checkThrough($i)) {
+                echo ($i - 1) . PHP_EOL;
                 break;
             }
             $i++;
@@ -62,35 +59,17 @@ class Puzzle extends PuzzleAbstract
 
     }
 
-    private function machineTick()
+    private function checkThrough($step)
     {
+        $pass = true;
         foreach ($this->machine as $levelKey => $level) {
-            $element = array_pop($level);
-            array_unshift($level, $element);
-            $this->machine[$levelKey] = $level;
-        }
-    }
-
-    private function checkThrough()
-    {
-        # Check each column
-        $numLevels = count($this->machine);
-        $sumColumns = array_fill(0, 20, 0);
-
-        foreach ($this->machine as $levelKey => $level) {
-
-            for ($j = 0; $j < count($this->machine[$levelKey]); $j++) {
-                $elementValue = $this->machine[$levelKey][$j];
-                $sumColumns[$j] += $elementValue;
-
+            $currentDiskPosition = $level[0];
+            $maxDiskPositions = $level[1];
+            if (($currentDiskPosition + ($step + ($levelKey - 1))) % $maxDiskPositions != 0) {
+                $pass = false;
             }
         }
-
-        if (in_array($numLevels, $sumColumns)) {
-            return true;
-        } else {
-            return false;
-        }
+        return $pass;
     }
 
     private function printMachine()
