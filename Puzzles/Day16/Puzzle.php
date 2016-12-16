@@ -39,28 +39,20 @@ class Puzzle extends PuzzleAbstract
 
         while(1) {
             $next = '';
-            for ($i = 0; $i < strlen($this->data) / 2; $i++) {
-                $chunk = substr($this->data, $i*2, 2);
-                # Could be done like this
-                # $xorArray = str_split($chunk);
-                # $result = (((int)$xorArray[0] xor (int)$xorArray[1]) + 1) % 2;
-                # The switch statement is faster
-                switch ($chunk) {
-                    case '00':
-                    case '11':
-                        $result = 1;
-                        break;
-                    case '01':
-                    case '10':
-                        $result = 0;
+            $len = strlen($this->data) / 2;
+            for ($i = 0; $i < $len; $i++) {
+                if ($this->data[$i*2] == $this->data[($i*2)+1]) {
+                    $next .= 1;
+                } else {
+                    $next .= 0;
                 }
-                $next .= (string) $result;
             }
 
             if (strlen($next) % 2 != 0) {
                 $this->solution = $next;
                 break;
             }
+
             # Assign the new string value to next loop
             $this->data = $next;
         }
