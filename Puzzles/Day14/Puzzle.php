@@ -74,7 +74,7 @@ class Puzzle extends PuzzleAbstract
             if ($valid = $this->isValidHash3($i)) {
                 $validHashes[$i] = $valid;
                 if ($this->displayIndexes) {
-                    echo $valid . PHP_EOL;
+                    //echo $valid . PHP_EOL;
                 }
             }
 
