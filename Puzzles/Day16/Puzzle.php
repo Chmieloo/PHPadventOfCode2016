@@ -12,8 +12,8 @@ use Puzzles\Abstraction\Puzzle as PuzzleAbstract;
 class Puzzle extends PuzzleAbstract
 {
     protected $input = '10001110011110000';
-    protected $input2;
-    private $length = 35651584;
+    protected $data;
+
     protected $solution;
 
     public function __construct()
@@ -30,39 +30,31 @@ class Puzzle extends PuzzleAbstract
         $first = $this->input;
         $replace = ['0' => '1', '1' => '0'];
 
-        while (strlen($first) < $this->length) {
+        while (strlen($first) < static::$length) {
             $suffix = strrev($first);
             $suffix = strtr($suffix, $replace);
             $first = $first . '0' . $suffix;
         }
-        //echo $first . ' length: ' . strlen($first) . PHP_EOL;
+        $this->data = substr($first, 0, static::$length);
 
-        $input2 = substr($first, 0, $this->length);
-        //echo "INPUT2: " . $input2 . PHP_EOL;
-        $this->input2 = $input2;
-
-        $j = 0;
         while(1) {
             $next = '';
-            for ($i = 0; $i < strlen($this->input2) / 2; $i++) {
-                $chunk = substr($this->input2, $i*2, 2);
-
-                $xorArray = str_split($chunk);
-                //var_dump($xorArray);
-                $result = (((int)$xorArray[0] xor (int)$xorArray[1]) + 1) % 2;
-                $next .= (string) $result;
+            $len = strlen($this->data) / 2;
+            for ($i = 0; $i < $len; $i++) {
+                if ($this->data[$i*2] == $this->data[($i*2)+1]) {
+                    $next .= 1;
+                } else {
+                    $next .= 0;
+                }
             }
 
-            //echo 'Checksum: ' . $next. ' Length: ' . strlen($next) . PHP_EOL;
-
             if (strlen($next) % 2 != 0) {
-                echo PHP_EOL . 'NEXT:' . $next . PHP_EOL;
+                $this->solution = $next;
                 break;
             }
 
-            $this->input2 = $next;
-            //echo PHP_EOL . $input2 . PHP_EOL;
-            $j++;
+            # Assign the new string value to next loop
+            $this->data = $next;
         }
     }
 
@@ -71,6 +63,6 @@ class Puzzle extends PuzzleAbstract
      */
     public function renderSolution()
     {
-        //echo 'Solution: ' . $this->solution . PHP_EOL;
+        echo 'Solution: ' . $this->solution . PHP_EOL;
     }
 }
