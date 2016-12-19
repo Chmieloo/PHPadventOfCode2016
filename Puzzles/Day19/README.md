@@ -1,57 +1,67 @@
-**--- Day 18: Like a Rogue ---**
+**--- Day 19: An Elephant Named Joseph ---**
 
-As you enter this room, you hear a loud click! Some of the tiles in the floor here seem to be pressure plates for traps, and the trap you just triggered has run out of... whatever it tried to do to you. You doubt you'll be so lucky next time.
+The Elves contact you over a highly secure emergency channel. Back at the North Pole, the Elves are busy misunderstanding White Elephant parties.
 
-Upon closer examination, the traps and safe tiles in this room seem to follow a pattern. The tiles are arranged into rows that are all the same width; you take note of the safe tiles (.) and traps (^) in the first row (your puzzle input).
+Each Elf brings a present. They all sit in a circle, numbered starting with position 1. Then, starting with the first Elf, they take turns stealing all the presents from the Elf to their left. An Elf with no presents is removed from the circle and does not take turns.
 
-The type of tile (trapped or safe) in each row is based on the types of the tiles in the same position, and to either side of that position, in the previous row. (If either side is off either end of the row, it counts as "safe" because there isn't a trap embedded in the wall.)
-
-For example, suppose you know the first row (with tiles marked by letters) and want to determine the next row (with tiles marked by numbers):
+For example, with five Elves (numbered 1 to 5):
 ```
-ABCDE
-12345
+  1
+5   2
+ 4 3
 ```
-The type of tile 2 is based on the types of tiles A, B, and C; the type of tile 5 is based on tiles D, E, and an imaginary "safe" tile. Let's call these three tiles from the previous row the left, center, and right tiles, respectively. Then, a new tile is a trap only in one of the following situations:
+Elf 1 takes Elf 2's present.
+Elf 2 has no presents and is skipped.
+Elf 3 takes Elf 4's present.
+Elf 4 has no presents and is also skipped.
+Elf 5 takes Elf 1's two presents.
+Neither Elf 1 nor Elf 2 have any presents, so both are skipped.
+Elf 3 takes Elf 5's three presents.
+So, with five Elves, the Elf that sits starting in position 3 gets all the presents.
 
-Its left and center tiles are traps, but its right tile is not.
-Its center and right tiles are traps, but its left tile is not.
-Only its left tile is a trap.
-Only its right tile is a trap.
-In any other situation, the new tile is safe.
+With the number of Elves given in your puzzle input, which Elf gets all the presents?
 
-Then, starting with the row ..^^., you can determine the next row by applying those rules to each new tile:
+Your puzzle answer was _1834471_.
 
-The leftmost character on the next row considers the left (nonexistent, so we assume "safe"), center (the first ., which means "safe"), and right (the second ., also "safe") tiles on the previous row. Because all of the trap rules require a trap in at least one of the previous three tiles, the first tile on this new row is also safe, ..
-The second character on the next row considers its left (.), center (.), and right (^) tiles from the previous row. This matches the fourth rule: only the right tile is a trap. Therefore, the next tile in this new row is a trap, ^.
-The third character considers .^^, which matches the second trap rule: its center and right tiles are traps, but its left tile is not. Therefore, this tile is also a trap, ^.
-The last two characters in this new row match the first and third rules, respectively, and so they are both also traps, ^.
-After these steps, we now know the next row of tiles in the room: .^^^^. Then, we continue on to the next row, using the same rules, and get ^^..^. After determining two new rows, our map looks like this:
+The first half of this puzzle is complete! It provides one gold star: *
+
+--- Part Two ---**
+**
+Realizing the folly of their present-exchange rules, the Elves agree to instead steal presents from the Elf directly across the circle. If two Elves are across the circle, the one on the left (from the perspective of the stealer) is stolen from. The other rules remain unchanged: Elves with no presents are removed from the circle entirely, and the other elves move in slightly to keep the circle evenly spaced.
+
+For example, with five Elves (again numbered 1 to 5):
+
+The Elves sit in a circle; Elf 1 goes first:
 ```
-..^^.
-.^^^^
-^^..^
+  1
+5   2
+ 4 3
 ```
-Here's a larger example with ten tiles per row and ten rows:
+Elves 3 and 4 are across the circle; Elf 3's present is stolen, being the one to the left. Elf 3 leaves the circle, and the rest of the Elves move in:
 ```
-.^^.^.^^^^
-^^^...^..^
-^.^^.^.^^.
-..^^...^^^
-.^^^^.^^.^
-^^..^.^^..
-^^^^..^^^.
-^..^^^^.^^
-.^^^..^.^^
-^^.^^^..^^
+  1           1
+5   2  -->  5   2
+ 4 -          4
 ```
-In ten rows, this larger example has 38 safe tiles.
+Elf 2 steals from the Elf directly across the circle, Elf 5:
+```
+  1         1 
+-   2  -->     2
+  4         4
+```
+Next is Elf 4 who, choosing between Elves 1 and 2, steals from Elf 1:
+```
+ -          2  
+    2  -->
+ 4          4
+```
+Finally, Elf 2 steals from Elf 4:
+```
+ 2
+    -->  2  
+ -
+```
+So, with five Elves, the Elf that sits starting in position 2 gets all the presents.
 
-Starting with the map in your puzzle input, in a total of 40 rows (including the starting row), how many safe tiles are there?
+With the number of Elves given in your puzzle input, which Elf now gets all the presents?
 
-Your puzzle answer was _2013_.
-
-**--- Part Two ---**
-
-How many safe tiles are there in a total of 400000 rows?
-
-Your puzzle answer was _20006289_.
