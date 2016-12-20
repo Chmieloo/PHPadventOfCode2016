@@ -1,6 +1,6 @@
 <?php
 
-namespace Puzzles\Day19;
+namespace Puzzles\Day20;
 
 use Puzzles\Abstraction\Puzzle as PuzzleAbstract;
 
@@ -22,6 +22,9 @@ class Puzzle extends PuzzleAbstract
 
     protected function loadInput()
     {
+        if (file_exists(__DIR__ . '/' . static::$fileName)) {
+            $this->input = file(__DIR__ . '/' . static::$fileName);
+        }
     }
 
     /**
