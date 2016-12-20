@@ -32,6 +32,6 @@ class Puzzle extends PuzzleAbstract
      */
     public function renderSolution()
     {
-        echo PHP_EOL . 'Solution: ' . $this->solution . PHP_EOL;
+        echo 'Solution: ' . $this->solution . PHP_EOL;
     }
 }

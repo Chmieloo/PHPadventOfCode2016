@@ -1,9 +1,9 @@
 <?php
 
-namespace Puzzles\Day19;
+namespace Puzzles\Day20;
 
 /**
- * Puzzle day 19
+ * Puzzle day 20
  * Class PuzzlePartTwo
  * Advent Of Code 2016
  */
@@ -11,40 +11,47 @@ class PuzzlePartTwo extends Puzzle
 {
     protected function processInput()
     {
-        $numElves = 5;//$this->numElves;
+        $numIPS = 0;
 
-        for ($i=0;$i<$numElves;$i++) {
-            $elves[$i] = $i;
+        $list = [];
+        foreach ($this->input as $ranges) {
+            $ranges = trim($ranges);
+            $line = explode('-', $ranges);
+            $list[$line[0]] = $line[1];
         }
 
-        echo 'Initial: ' . join(' ', $elves) . PHP_EOL;
+        ksort($list);
 
-        while ($numElves > 1) {
-            # Reindex ?
-            //$elves = array_values($elves);
-            //$numElves = count($elves);
-            $middle = (int) floor($numElves / 2);
-            echo $middle . PHP_EOL;
-            # Remove element
-            unset($elves[$middle]);
-            $numElves--;
+        $prevStartRange = key($list);
+        $prevEndRange = $list[$prevStartRange];
 
-            $element = reset($elves); // also returns element
-            unset($elves[key($elves)]);
+        $highestIpFound = $prevEndRange;
 
-            $elves[] = $element;
+        reset($list);
+        unset($list[key($list)]);
 
-            //unset($elves[0]);
-
-            echo 'Step: ' . join(' ', $elves) . PHP_EOL;
-            if ($numElves % 10 == 0) {
-                echo $numElves . PHP_EOL;
+        foreach ($list as $startRange => $endRange) {
+            $numPrevElements = ($prevEndRange - $prevStartRange) + 1;
+            $numThisElements = ($endRange - $startRange) + 1;
+            $totalBoth = ($endRange - $prevStartRange) + 1;
+            if ($totalBoth - ($numPrevElements + $numThisElements) > 0
+                # AND START IP > HIGHEST FOUND + 1
+                && $startRange > ($highestIpFound + 1)
+            ) {
+                $this->solution = ($prevEndRange + 1);
+                //break;
+                $numIPS ++;
             }
-            //echo $numElves . PHP_EOL;
-            //sleep(1);
+
+            if ($endRange > $highestIpFound) {
+                $highestIpFound = $endRange;
+            }
+
+            $prevStartRange = $startRange;
+            $prevEndRange = $endRange;
         }
 
-        $this->solution = array_values($elves)[0] + 1;
 
+        $this->solution = $numIPS;
     }
 }
