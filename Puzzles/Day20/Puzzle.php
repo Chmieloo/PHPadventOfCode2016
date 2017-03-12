@@ -5,8 +5,8 @@ namespace Puzzles\Day20;
 use Puzzles\Abstraction\Puzzle as PuzzleAbstract;
 
 /**
- * Puzzle day 18
- * Common class for day 18
+ * Puzzle day 20
+ * Common class for day 20
  * Advent Of Code 2016
  */
 class Puzzle extends PuzzleAbstract

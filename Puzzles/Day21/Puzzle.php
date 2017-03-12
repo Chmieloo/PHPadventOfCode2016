@@ -1,18 +1,17 @@
 <?php
 
-namespace Puzzles\Day19;
+namespace Puzzles\Day21;
 
 use Puzzles\Abstraction\Puzzle as PuzzleAbstract;
 
 /**
- * Puzzle day 19
- * Common class for day 19
+ * Puzzle day 21
+ * Common class for day 21
  * Advent Of Code 2016
  */
 class Puzzle extends PuzzleAbstract
 {
     protected $solution;
-    protected $numElves = 3014387;
 
     public function __construct()
     {
@@ -22,6 +21,9 @@ class Puzzle extends PuzzleAbstract
 
     protected function loadInput()
     {
+        if (file_exists(__DIR__ . '/' . static::$fileName)) {
+            $this->input = file(__DIR__ . '/' . static::$fileName);
+        }
     }
 
     /**
@@ -29,6 +31,6 @@ class Puzzle extends PuzzleAbstract
      */
     public function renderSolution()
     {
-        echo PHP_EOL . 'Solution: ' . $this->solution . PHP_EOL;
+        echo 'Solution: ' . $this->solution . PHP_EOL;
     }
 }
