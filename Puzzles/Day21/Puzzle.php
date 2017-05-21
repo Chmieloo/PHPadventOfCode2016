@@ -12,9 +12,13 @@ use Puzzles\Abstraction\Puzzle as PuzzleAbstract;
 class Puzzle extends PuzzleAbstract
 {
     protected $solution;
+    protected $inputString = 'abcdefgh';
+    # TODO change this to input
+    protected static $fileName = 'simpleinput';
 
     public function __construct()
     {
+        echo 'Input: ' . $this->inputString . PHP_EOL;
         $this->loadInput();
         $this->processInput();
     }
@@ -31,6 +35,6 @@ class Puzzle extends PuzzleAbstract
      */
     public function renderSolution()
     {
-        echo 'Solution: ' . $this->solution . PHP_EOL;
+        echo 'Solution: ' . $this->inputString . PHP_EOL;
     }
 }
