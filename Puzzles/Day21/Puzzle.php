@@ -14,7 +14,7 @@ class Puzzle extends PuzzleAbstract
     protected $solution;
     protected $inputString = 'abcdefgh';
     # TODO change this to input
-    protected static $fileName = 'simpleinput';
+    protected static $fileName = 'input.1';
 
     public function __construct()
     {

@@ -98,13 +98,41 @@ class PuzzlePartOne extends Puzzle
         $this->inputString = join($inputArray);
     }
 
+    /**
+     * Reverse array slice between indexes
+     */
     private function reverseInput($instruction)
     {
-
+        $inputArray = str_split($this->inputString);
+        if (strpos($instruction, 'reverse') === 0) {
+            preg_match('/reverse positions (\d+) through (\d+)/', $instruction, $matches);
+            $reverseStart = $matches[1];
+            $reverseEnd = $matches[2];
+            $exploded = str_split($this->inputString);
+            $arrayChunk = 
+                join(array_slice($exploded, 0, $reverseStart)) . 
+                join(array_reverse(array_slice($exploded, $reverseStart, ($reverseEnd - $reverseStart + 1)))) . 
+                join(array_slice($exploded, $reverseEnd + 1, count($exploded)));
+            $this->inputString = $arrayChunk;
+        }
     }
 
     private function moveInput($instruction)
     {
-
+        $inputArray = str_split($this->inputString);
+        if (strpos($instruction, 'move') === 0) {
+            preg_match('/move position (\d+) to position (\d+)/', $instruction, $matches);
+            $moveFrom = $matches[1];
+            $moveTo = $matches[2];
+            $exploded = str_split($this->inputString);
+            $moveChar = $exploded[$moveFrom];
+            unset($exploded[$moveFrom]);
+            
+            $exploded = array_values($exploded);
+            $result = join(array_slice($exploded, 0, $moveTo)) .
+                $moveChar .
+                join(array_slice($exploded, $moveTo));
+            $this->inputString = $result;
+        }
     }
 }
