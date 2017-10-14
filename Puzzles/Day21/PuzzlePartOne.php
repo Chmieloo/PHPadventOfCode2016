@@ -12,6 +12,7 @@ class PuzzlePartOne extends Puzzle
     protected function processInput()
     {
         foreach ($this->input as $instruction) {
+            echo $this->inputString . ' | ';
             $instruction = trim($instruction);
             $instructionWords = explode(' ', $instruction);
 
@@ -70,7 +71,8 @@ class PuzzlePartOne extends Puzzle
             foreach ($letterYPositions as $index) {
                 $this->inputString[$index] = $x;
             }
-        }
+        } 
+        echo $instruction . ' | ' . $this->inputString . PHP_EOL;
     }
 
     private function rotateInput($instruction)
@@ -81,22 +83,36 @@ class PuzzlePartOne extends Puzzle
          */
         $inputArray = str_split($this->inputString);
         if (strpos($instruction, 'rotate left') === 0) {
-            preg_match('/rotate left (\d+) steps/', $instruction, $matches);
+            preg_match('/rotate left (\d+) step/', $instruction, $matches);
             $steps = $matches[1];
             for ($i=0; $i<$steps; $i++){
                 $element = array_shift($inputArray);
                 array_push($inputArray, $element);
             }
         } elseif (strpos($instruction, 'rotate right') === 0) {
-            preg_match('/rotate right (\d+) steps/', $instruction, $matches);
+            preg_match('/rotate right (\d+) step/', $instruction, $matches);
             $steps = $matches[1];
             for ($i=0; $i<$steps; $i++){
                 $element = array_pop($inputArray);
                 array_unshift($inputArray, $element);
             }
+        } elseif (strpos($instruction, 'rotate based on position') === 0) {
+            preg_match('/rotate based on position of letter (\w+)/', $instruction, $matches);
+            $letter = $matches[1];
+            $position = strpos($this->inputString, $letter);
+            
+            $additionalRotations = 0;
+            if ($position >= 4) $additionalRotations++;
+            $rotations = 1 + $position + $additionalRotations;
+            for ($i=0; $i<$rotations; $i++){
+                $element = array_pop($inputArray);
+                array_unshift($inputArray, $element);
+            }
         }
+
         $this->inputString = join($inputArray);
-    }
+        echo $instruction . ' | ' . $this->inputString . PHP_EOL;
+    }   
 
     /**
      * Reverse array slice between indexes
@@ -115,6 +131,7 @@ class PuzzlePartOne extends Puzzle
                 join(array_slice($exploded, $reverseEnd + 1, count($exploded)));
             $this->inputString = $arrayChunk;
         }
+        echo $instruction . ' | ' . $this->inputString . PHP_EOL;
     }
 
     private function moveInput($instruction)
@@ -134,5 +151,6 @@ class PuzzlePartOne extends Puzzle
                 join(array_slice($exploded, $moveTo));
             $this->inputString = $result;
         }
+        echo $instruction . ' | ' . $this->inputString . PHP_EOL;
     }
 }

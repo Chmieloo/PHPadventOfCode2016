@@ -13,8 +13,7 @@ class Puzzle extends PuzzleAbstract
 {
     protected $solution;
     protected $inputString = 'abcdefgh';
-    # TODO change this to input
-    protected static $fileName = 'input.1';
+    protected static $fileName = 'input';
 
     public function __construct()
     {
